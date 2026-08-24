@@ -1,0 +1,36 @@
+name: Build Fabric Mod
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kodu Depodan Çek
+        uses: actions/checkout@v4
+
+      - name: Java JDK 21 Kurulumu
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'microsoft'
+          java-version: '21'
+
+      - name: Gradle İzinlerini Ayarla
+        run: chmod +x gradlew || true
+
+      - name: Gradle Önbellekleme
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Modu Derle
+        run: ./gradlew build
+
+      - name: .jar Dosyasını Yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: Fabric-Mod-Output
+          path: build/libs/*.jar
+          retention-days: 7
